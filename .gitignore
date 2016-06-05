@@ -1,0 +1,14 @@
+node_modules
+dist
+bower_components
+.tmp
+.publish/
+
+# OSX
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
