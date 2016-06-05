@@ -1,0 +1,40 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<dom-module id="tips-feed">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <firebase-collection
+      location="https://project-4851512002671130876.firebaseio.com/tips/2016/06/5"
+      data="{{tips}}"></firebase-collection>
+      
+    <h1 class="page-title" tabindex="-1">Tips for today</h1>
+    
+    <template is="dom-repeat" items="[[tips]]" as="tip">
+			<tip-card tip="[[tip]]"></tip-card>
+    </template>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'tips-feed',
+
+      properties: {
+      }
+    });
+  })();
+  </script>
+</dom-module>
