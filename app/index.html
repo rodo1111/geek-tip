@@ -81,6 +81,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <iron-icon icon="home"></iron-icon>
             <span>Home</span>
           </a>
+          <a data-route="login" href="{{baseUrl}}login">
+            <iron-icon icon="home"></iron-icon>
+            <span>Login</span>
+          </a>
         </paper-menu>
       </paper-scroll-header-panel>
 
@@ -108,6 +112,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
             <section data-route="home" tabindex="-1">
               <tips-feed></tips-feed>
+            </section>
+            <section data-route="login" tabindex="-1">
+              <tips-login></tips-login>
             </section>
           </iron-pages>
         </div>
