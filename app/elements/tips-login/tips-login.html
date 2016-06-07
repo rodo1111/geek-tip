@@ -14,6 +14,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
+      .welcome-msg {
+        @apply(--paper-font-title);
+        margin-bottom: 20px;
+      }
+
+      paper-button {
+        @apply(--paper-font-button);
+      }
     </style>
 
     <firebase-app
@@ -21,19 +29,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       api-key="AIzaSyDATUSSUpCcNq_dbGV2xrqrE0w9gpo_Ym0" 
       database-url="https://project-4851512002671130876.firebaseio.com">
     </firebase-app>
-    <firebase-auth id="auth" user="{{user}}" provider="google" on-error="showError"></firebase-auth>
+    <firebase-auth id="auth" user="{{user}}" provider="facebook" on-login="_handleLogin" on-error="_handleError"></firebase-auth>
 
-    {{user.uid}}
-    <paper-button raised on-click="_login">Login</paper-button>
-    
-    <div id="createAccount">
-      <paper-input label="Name" value="{{accountName}}"></paper-input>
-      <paper-input label="Email" value="{{accountEmail}}">
-        <div suffix>@prodigious.cr</div>
-      </paper-input>
-      <paper-input label="Password" type="password" value="{{accountPassword}}"></paper-input>
-      <paper-button raised on-click="_createAccount">Create account</paper-button>
+    <div hidden="[[user]]">
+      <paper-button raised on-click="_login">Facebook Login</paper-button>
     </div>
+
+    <div hidden="[[!user]]">
+      <div class="welcome-msg">Welcome {{user.displayName}}</div>
+      <paper-button raised on-click="_logout">Logout</paper-button>
+    </div>
+
+    {{print(user)}}
   </template>
   <script>
   (function() {
@@ -48,19 +55,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: null
         },
       },
+
+      print: function(user) {
+        console.log(user);
+      },
       
       _login: function() {
         this.$.auth.signInWithPopup();
       },
-      
-      _createAccount: function() {
-        this.$.firebaseLogin.createUser(this.accountEmail, this.accountPassword);
+
+      _logout: function() {
+        this.$.auth.signOut();
       },
       
-      _userCreatedSuccess: function(user) {
+      _handleLogin: function(user) {
         console.log(user);
       },
-      
+
       _handleError: function(error) {
         console.log(error);
       }
