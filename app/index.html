@@ -118,10 +118,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div class="content">
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
             <section data-route="home" tabindex="-1">
+              <my-tip geek-tip-user="{{geekTipUser}}"></my-tip>
               <tips-feed></tips-feed>
             </section>
             <section data-route="login" tabindex="-1">
-              <tips-login></tips-login>
+              <tips-login geek-tip-user="{{geekTipUser}}"></tips-login>
             </section>
           </iron-pages>
         </div>

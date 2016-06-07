@@ -1,0 +1,58 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<dom-module id="my-tip">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      paper-button {
+        @apply(--paper-font-button);
+      }
+    </style>
+
+    <firebase-document
+      id="userRecord"
+      app-name="geektip"
+      data="[[_tip]]">
+    </firebase-document>
+
+    <paper-textarea label="My #geektip" hidden="{{!geekTipUser}}" value="{{tipContent}}"></paper-textarea>
+    <paper-button raised on-click="_submitTip">Submit</paper-button>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'my-tip',
+
+      properties: {
+        geekTipUser: {
+          type: Object,
+          value: null
+        },
+        _tip: {
+          type: Object
+        }
+      },
+
+      _submitTip: function() {
+        this._tip = {
+          author: this.geekTipUser.displayName,
+          content: this.tipContent
+        };
+        this.$.userRecord.save('/tips/2016/06/5');
+      }
+    });
+  })();
+  </script>
+</dom-module>
