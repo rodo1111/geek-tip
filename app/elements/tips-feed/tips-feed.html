@@ -15,12 +15,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
       }
     </style>
-    <firebase-collection
-      location="https://project-4851512002671130876.firebaseio.com/tips/2016/06/5"
-      data="{{tips}}"></firebase-collection>
-      
-    <h1 class="page-title" tabindex="-1">Tips for today</h1>
+
+    <firebase-query
+      id="yo"
+      app-name="geektip"
+      path="/tips/2016/06/5"
+      data="{{tips}}">
+    </firebase-query>
     
+    <h1 class="page-title" tabindex="-1">Tips for today</h1>
     <template is="dom-repeat" items="[[tips]]" as="tip">
 			<tip-card tip="[[tip]]"></tip-card>
     </template>

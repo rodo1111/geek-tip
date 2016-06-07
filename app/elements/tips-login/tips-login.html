@@ -22,25 +22,50 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       paper-button {
         @apply(--paper-font-button);
       }
+
+      .profile-wrapper {
+        display: inline-block;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .profile-wrapper iron-image {
+        float: left;
+        margin-right: 10px;
+      }
+
+      .profile-wrapper .welcome-msg {
+        position: relative;
+        top: 12px;
+      }
     </style>
 
-    <firebase-app
-      auth-domain="project-4851512002671130876.firebaseapp.com"
-      api-key="AIzaSyDATUSSUpCcNq_dbGV2xrqrE0w9gpo_Ym0" 
-      database-url="https://project-4851512002671130876.firebaseio.com">
-    </firebase-app>
-    <firebase-auth id="auth" user="{{user}}" provider="facebook" on-login="_handleLogin" on-error="_handleError"></firebase-auth>
+    <firebase-auth 
+      id="auth" 
+      app-name="geektip" 
+      user="{{user}}" 
+      provider="facebook" 
+      on-login="_handleLogin" 
+      on-error="_handleError">
+    </firebase-auth>
 
-    <div hidden="[[user]]">
+    <firebase-document
+      id="userRecord"
+      app-name="geektip"      
+      data="[[geekTipUser]]">
+    </firebase-document>
+
+    <div hidden="[[geekTipUser]]">
       <paper-button raised on-click="_login">Facebook Login</paper-button>
     </div>
 
-    <div hidden="[[!user]]">
-      <div class="welcome-msg">Welcome {{user.displayName}}</div>
+    <div hidden="[[!geekTipUser]]">
+      <div class="profile-wrapper">
+        <iron-image alt="{{geekTipUser.displayName}}" src="{{geekTipUser.photoURL}}"></iron-image>
+        <div class="welcome-msg">Welcome {{geekTipUser.displayName}}</div>
+      </div>
       <paper-button raised on-click="_logout">Logout</paper-button>
     </div>
-
-    {{print(user)}}
   </template>
   <script>
   (function() {
@@ -52,8 +77,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       properties: {
         user: {
           type: Object,
-          value: null
+          value: null,
+          observer: '_userChange'
         },
+        geekTipUser: {
+          type: Object,
+          value: null
+        }
       },
 
       print: function(user) {
@@ -74,6 +104,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _handleError: function(error) {
         console.log(error);
+      },
+
+      _userChange: function(user) {
+        if (user && user.uid) {
+          this.geekTipUser = user.providerData[0];
+          this.$.userRecord.save('/users', this.geekTipUser.uid);
+        }
       }
     });
   })();
