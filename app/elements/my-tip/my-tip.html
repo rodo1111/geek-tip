@@ -30,7 +30,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       data="[[_tip]]">
     </firebase-document>
 
-    <paper-material elevation="1" hidden="{{!geekTipUser}}">
+    <firebase-document
+      id="tipOfTheDayRecord"
+      app-name="geektip"
+      path="/userTips/10153787719684685/tips/2016/6/8"
+      data="{{_tipOfTheDay}}">
+    </firebase-document>
+
+    <paper-material elevation="1" hidden="[[_hideTipSubmitForm]]">
       <div id="formWrapper">
         <paper-textarea label="My #geektip for today" value="{{tipContent}}"></paper-textarea>
         <paper-button raised on-click="_submitTip" class="indigo">Submit</paper-button>
@@ -59,6 +66,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         _tip: {
           type: Object
         },
+        _tipOfTheDay: {
+          type: Boolean,
+          value: false,
+          observer: '_tipOfDayChange'
+        },
+        _hideTipSubmitForm: {
+          type: Boolean,
+          value: true
+        },
         _tipSubmitted: {
           type: Boolean,
           value: false
@@ -78,18 +94,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         'neon-animation-finish': '_onNeonAnimationFinish'
       },
 
+      ready: function() {
+        // this._tipOfTheDayPath = this.$.dateUtils.currentDatePath;
+        // var record = this.$.tipOfTheDayRecord;
+        // setTimeout(function() {
+        //   // console.log(record.getStoredValue('/userTips/10153787719684685/tips/2016/6'));
+        // }, 3000);
+      },
+
       _onNeonAnimationFinish: function() {
-        console.log('animation done!');
         this.$.formWrapper.style.display = 'none';
         this._tipSubmitted = true;
       },
 
+      _tipOfDayChange: function(newTipOfDay) {
+        this._hideTipSubmitForm = !(typeof newTipOfDay === 'object' || newTipOfDay === false);
+      },
+
       _submitTip: function() {
+        var currentDatePath = this.$.dateUtils.currentDatePath;
+        var currentMonthPath = this.$.dateUtils.currentMonthPath;
+        var currentDateDay = this.$.dateUtils.currentDateDay;
+
         this._tip = {
           author: this.geekTipUser.displayName,
           content: this.tipContent
         };
-        this.$.userRecord.save('/tips/' + this.$.dateUtils.currentDatePath);
+
+        this._tipOfTheDay = true;
+
+        this.$.userRecord.save('/tips/' + currentDatePath);
+        this.$.tipOfTheDayRecord.save('/userTips/' + this.geekTipUser.uid + '/tips/' + currentMonthPath, currentDateDay);
+
         this.playAnimation();
       }
     });
