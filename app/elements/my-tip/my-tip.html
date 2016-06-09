@@ -33,7 +33,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <firebase-document
       id="tipOfTheDayRecord"
       app-name="geektip"
-      path="/userTips/10153787719684685/tips/2016/6/8"
+      path="/userTips/[[geekTipUser.uid]]/tips/[[_currentDatePath]]"
       data="{{_tipOfTheDay}}">
     </firebase-document>
 
@@ -71,6 +71,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: false,
           observer: '_tipOfDayChange'
         },
+        _currentDatePath: {
+          type: String
+        },
         _hideTipSubmitForm: {
           type: Boolean,
           value: true
@@ -95,11 +98,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       ready: function() {
-        // this._tipOfTheDayPath = this.$.dateUtils.currentDatePath;
-        // var record = this.$.tipOfTheDayRecord;
-        // setTimeout(function() {
-        //   // console.log(record.getStoredValue('/userTips/10153787719684685/tips/2016/6'));
-        // }, 3000);
+        this._currentDatePath = this.$.dateUtils.currentDatePath;
       },
 
       _onNeonAnimationFinish: function() {
@@ -112,7 +111,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _submitTip: function() {
-        var currentDatePath = this.$.dateUtils.currentDatePath;
         var currentMonthPath = this.$.dateUtils.currentMonthPath;
         var currentDateDay = this.$.dateUtils.currentDateDay;
 
@@ -123,7 +121,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         this._tipOfTheDay = true;
 
-        this.$.userRecord.save('/tips/' + currentDatePath);
+        this.$.userRecord.save('/tips/' + this._currentDatePath);
         this.$.tipOfTheDayRecord.save('/userTips/' + this.geekTipUser.uid + '/tips/' + currentMonthPath, currentDateDay);
 
         this.playAnimation();
