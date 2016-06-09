@@ -8,41 +8,32 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<dom-module id="tips-feed">
+<dom-module id="date-utils">
   <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-
-    <date-utils id="dateUtils"></date-utils>
-
-    <firebase-query
-      id="tips"
-      app-name="geektip"
-      path="/tips/[[_currentDatePath]]"
-      data="{{tips}}">
-    </firebase-query>
-    
-    <h1 class="page-title" tabindex="-1">Tips for today</h1>
-    <template is="dom-repeat" items="[[tips]]" as="tip">
-			<tip-card tip="[[tip]]"></tip-card>
-    </template>
   </template>
   <script>
   (function() {
     'use strict';
 
     Polymer({
-      is: 'tips-feed',
+      is: 'date-utils',
 
       properties: {
-      },
+        currentDatePath: {
+          type: String,
+          value: function() {
+            var date = new Date();
+            
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var day = date.getDate();
 
-      ready: function() {
-        this._currentDatePath = this.$.dateUtils.currentDatePath;
+            return year + '/' + month + '/' + day;
+          },
+          readOnly: true
+        }
       }
+
     });
   })();
   </script>

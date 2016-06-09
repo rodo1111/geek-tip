@@ -14,10 +14,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
-      paper-button {
-        @apply(--paper-font-button);
+
+      paper-textarea {
+        margin-bottom: 10px;
       }
     </style>
+
+    <style is="custom-style" include="shared-styles"></style>
+
+    <date-utils id="dateUtils"></date-utils>
 
     <firebase-document
       id="userRecord"
@@ -25,8 +30,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       data="[[_tip]]">
     </firebase-document>
 
-    <paper-textarea label="My #geektip" hidden="{{!geekTipUser}}" value="{{tipContent}}"></paper-textarea>
-    <paper-button raised on-click="_submitTip">Submit</paper-button>
+    <paper-material elevation="1" hidden="{{!geekTipUser}}">
+      <div id="formWrapper">
+        <paper-textarea label="My #geektip for today" value="{{tipContent}}"></paper-textarea>
+        <paper-button raised on-click="_submitTip" class="indigo">Submit</paper-button>
+      </div>
+      <div id="tipSubmittedMsg" hidden="{{!_tipSubmitted}}">
+        AWESOME!! You just submitted the tip of the day
+      </div>
+    </paper-material>
   </template>
   <script>
   (function() {
@@ -35,6 +47,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
       is: 'my-tip',
 
+      behaviors: [
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+
       properties: {
         geekTipUser: {
           type: Object,
@@ -42,7 +58,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         _tip: {
           type: Object
+        },
+        _tipSubmitted: {
+          type: Boolean,
+          value: false
+        },
+        animationConfig: {
+          value: function() {
+            return {
+              name: 'scale-down-animation',
+              node: this
+            }
+          }
         }
+      },
+
+      listeners: {
+        // this event is fired when the animation finishes
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+
+      _onNeonAnimationFinish: function() {
+        console.log('animation done!');
+        this.$.formWrapper.style.display = 'none';
+        this._tipSubmitted = true;
       },
 
       _submitTip: function() {
@@ -50,7 +89,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           author: this.geekTipUser.displayName,
           content: this.tipContent
         };
-        this.$.userRecord.save('/tips/2016/06/5');
+        this.$.userRecord.save('/tips/' + this.$.dateUtils.currentDatePath);
+        this.playAnimation();
       }
     });
   })();

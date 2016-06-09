@@ -40,6 +40,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
+    <style is="custom-style" include="shared-styles"></style>
+
     <firebase-auth 
       id="auth" 
       app-name="geektip" 
@@ -56,7 +58,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </firebase-document>
 
     <div hidden="[[geekTipUser]]">
-      <paper-button raised on-click="_login">Facebook Login</paper-button>
+      <paper-button raised on-click="_login" class="indigo">Facebook Login</paper-button>
     </div>
 
     <div hidden="[[!geekTipUser]]">
@@ -64,7 +66,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-image alt="{{geekTipUser.displayName}}" src="{{geekTipUser.photoURL}}"></iron-image>
         <div class="welcome-msg">Welcome {{geekTipUser.displayName}}</div>
       </div>
-      <paper-button raised on-click="_logout">Logout</paper-button>
+      <paper-button raised on-click="_logout" class="indigo">Logout</paper-button>
     </div>
   </template>
   <script>
