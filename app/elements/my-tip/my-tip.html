@@ -61,7 +61,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       properties: {
         geekTipUser: {
           type: Object,
-          value: null
+          value: null,
+          observer: '_geekTipUserChange'
         },
         _tip: {
           type: Object
@@ -102,27 +103,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _onNeonAnimationFinish: function() {
+        var self = this;
         this.$.formWrapper.style.display = 'none';
         this._tipSubmitted = true;
+
+        setTimeout(function() {
+          var currentMonthPath = self.$.dateUtils.currentMonthPath;
+          var currentDateDay = self.$.dateUtils.currentDateDay;
+
+          self._tipOfTheDay = true;
+          self.$.tipOfTheDayRecord.save('/userTips/' + self.geekTipUser.uid + '/tips/' + currentMonthPath, currentDateDay);
+        }, 7000);
+      },
+
+      _geekTipUserChange: function(newGeekTipUser) {
+        this._verifySubmitFormHidden();
       },
 
       _tipOfDayChange: function(newTipOfDay) {
-        this._hideTipSubmitForm = !(typeof newTipOfDay === 'object' || newTipOfDay === false);
+        this._verifySubmitFormHidden();
+      },
+
+      _verifySubmitFormHidden: function() {
+        if (this.geekTipUser && this.geekTipUser.uid) {
+          this._hideTipSubmitForm = !(typeof this._tipOfTheDay === 'object' || this._tipOfTheDay === false);
+        } else {
+          this._hideTipSubmitForm = true;
+        }
       },
 
       _submitTip: function() {
-        var currentMonthPath = this.$.dateUtils.currentMonthPath;
-        var currentDateDay = this.$.dateUtils.currentDateDay;
-
         this._tip = {
           author: this.geekTipUser.displayName,
           content: this.tipContent
         };
 
-        this._tipOfTheDay = true;
-
         this.$.userRecord.save('/tips/' + this._currentDatePath);
-        this.$.tipOfTheDayRecord.save('/userTips/' + this.geekTipUser.uid + '/tips/' + currentMonthPath, currentDateDay);
 
         this.playAnimation();
       }
